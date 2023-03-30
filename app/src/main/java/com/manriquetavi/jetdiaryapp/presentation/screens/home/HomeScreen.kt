@@ -5,52 +5,48 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.manriquetavi.jetdiaryapp.R
+import com.manriquetavi.jetdiaryapp.domain.repository.Diaries
+import com.manriquetavi.jetdiaryapp.util.RequestState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    diaries: RequestState<Diaries>,
     drawerState: DrawerState,
     signOutClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onCalendarClicked: () -> Unit,
     navigateToWrite: () -> Unit
 ) {
-    /*
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(
-                brush = Brush.verticalGradient(
-                    listOf(
-                        Color(0xffffe7e4),
-                        Color(0xfffe868f)
-                    )
-                )
-            )
-    ) {
-
-    }*/
-    
+    var padding by remember { mutableStateOf(PaddingValues()) }
+    val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     NavigationDrawer(
         drawerState = drawerState,
         signOutClicked = signOutClicked
     ) {
         Scaffold(
+            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 HomeTopBar(
-                    onProfileClicked = onProfileClicked,
+                    scrollBehavior = scrollBehavior,
+                    onMenuClicked = onProfileClicked,
                     onCalendarClicked = onCalendarClicked
                 )
             },
             floatingActionButton = {
-                FloatingActionButton(onClick = navigateToWrite) {
+                FloatingActionButton(
+                    modifier = Modifier.padding(end = padding.calculateEndPadding(LayoutDirection.Ltr)),
+                    onClick = navigateToWrite
+                ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "New Diary Icon"
@@ -58,9 +54,32 @@ fun HomeScreen(
                 }
             }
         ) { paddingValues ->
-            HomeContent(
-                paddingValues = paddingValues
-            )
+            padding = paddingValues
+            when(diaries) {
+                is RequestState.Success -> {
+                    HomeContent(
+                        diariesWithDates = diaries.date,
+                        onClickDiary = {},
+                        paddingValues = paddingValues
+                    )
+                }
+                is RequestState.Error -> {
+                    EmptyContent(
+                        title = "Error",
+                        subtitle = "${diaries.error.message}"
+                    )
+                }
+                is RequestState.Loading -> {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                }
+                else -> {}
+            }
         }
     }
 }
@@ -119,6 +138,7 @@ fun NavigationDrawer(
 @Preview
 fun HomeScreenPreview() {
     HomeScreen(
+        diaries = RequestState.Idle,
         drawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
         onProfileClicked = { },
         signOutClicked = { },
