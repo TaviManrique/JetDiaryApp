@@ -296,7 +296,7 @@ fun DiaryHolderPreview() {
             description =
                 "Lorem asdkjfhakds adjsgfhadkgjha asdfgjkahfgkjahfgkaf aksdghaksdghaisdofguhaiughadfiguhad"
             mood = Mood.Crying.name
-            images = realmListOf("", "", "", "", "", "", "", "")
+            images = realmListOf("https://talently.tech/blog/wp-content/uploads/2022/04/que-es-android-studio-scaled-1200x900.jpg", "https://talently.tech/blog/wp-content/uploads/2022/04/que-es-android-studio-scaled-1200x900.jpg")
         },
         onClickDiary = {}
     )

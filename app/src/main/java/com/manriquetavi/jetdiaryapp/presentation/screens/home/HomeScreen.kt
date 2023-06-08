@@ -25,7 +25,7 @@ fun HomeScreen(
     signOutClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onCalendarClicked: () -> Unit,
-    navigateToWrite: () -> Unit
+    navigateToNewDiary: () -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -45,7 +45,7 @@ fun HomeScreen(
             floatingActionButton = {
                 FloatingActionButton(
                     modifier = Modifier.padding(end = padding.calculateEndPadding(LayoutDirection.Ltr)),
-                    onClick = navigateToWrite
+                    onClick = navigateToNewDiary
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -84,7 +84,6 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NavigationDrawer(
     drawerState: DrawerState,
@@ -133,7 +132,6 @@ fun NavigationDrawer(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun HomeScreenPreview() {
@@ -143,6 +141,6 @@ fun HomeScreenPreview() {
         onProfileClicked = { },
         signOutClicked = { },
         onCalendarClicked = { },
-        navigateToWrite = { }
+        navigateToNewDiary = { }
     )
 }

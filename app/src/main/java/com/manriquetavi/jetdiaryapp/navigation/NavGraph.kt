@@ -1,5 +1,6 @@
 package com.manriquetavi.jetdiaryapp.navigation
 
+import android.util.Log
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
@@ -15,8 +16,10 @@ import com.manriquetavi.jetdiaryapp.domain.repository.MongoDB
 import com.manriquetavi.jetdiaryapp.presentation.components.CommonAlertDialog
 import com.manriquetavi.jetdiaryapp.presentation.screens.authentication.AuthScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.authentication.AuthViewModel
+import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.stepone.NewDiaryStepOneScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeViewModel
+import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo.NewDiaryStepTwoScreen
 import com.manriquetavi.jetdiaryapp.util.Constants.APP_ID
 import com.manriquetavi.jetdiaryapp.util.RequestState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -45,8 +48,8 @@ fun SetupNavGraph(
             onDataLoaded = onDataLoaded
         )
         homeRoute(
-            navigateToWrite = {
-                navController.navigate(Screen.Write.route)
+            navigateToNewDiary = {
+                navController.navigate(Screen.NewDiary.route)
             },
             navigateToAuth = {
                 navController.popBackStack()
@@ -55,6 +58,15 @@ fun SetupNavGraph(
             onDataLoaded = onDataLoaded
         )
         writeRoute()
+        newDiaryRoute(
+            onBackPressed = {
+                navController.popBackStack()
+            },
+            navigateToNewDiaryStepTwoScreen = {
+                navController.navigate(Screen.NewDiaryStepTwo.passMoodId(it))
+                Log.d("NAVIGATE", "SetupNavGraph: $it")
+            }
+        )
     }
 }
 
@@ -105,9 +117,8 @@ fun NavGraphBuilder.authenticationRoute(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 fun NavGraphBuilder.homeRoute(
-    navigateToWrite: () -> Unit,
+    navigateToNewDiary: () -> Unit,
     navigateToAuth: () -> Unit,
     onDataLoaded: () -> Unit
 ) {
@@ -134,7 +145,7 @@ fun NavGraphBuilder.homeRoute(
                 scope.launch { drawerState.open() }
             },
             onCalendarClicked = {},
-            navigateToWrite = navigateToWrite
+            navigateToNewDiary = navigateToNewDiary
         )
 
         LaunchedEffect(key1 = Unit) {
@@ -172,5 +183,22 @@ fun NavGraphBuilder.writeRoute() {
         )
     ) {
 
+    }
+}
+
+fun NavGraphBuilder.newDiaryRoute(
+    onBackPressed: () -> Unit,
+    navigateToNewDiaryStepTwoScreen: (Int) -> Unit
+) {
+    composable(route = Screen.NewDiary.route) {
+        NewDiaryStepOneScreen(
+            onBackPressed = onBackPressed,
+            navigateToNewDiaryStepTwoScreen = navigateToNewDiaryStepTwoScreen
+        )
+    }
+    composable(route = Screen.NewDiaryStepTwo.route) {
+        NewDiaryStepTwoScreen(
+            onBackPressed = onBackPressed
+        )
     }
 }
