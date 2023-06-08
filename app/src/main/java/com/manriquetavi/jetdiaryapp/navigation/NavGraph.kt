@@ -6,12 +6,15 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.manriquetavi.jetdiaryapp.domain.model.Diary
+import com.manriquetavi.jetdiaryapp.domain.model.moods
 import com.manriquetavi.jetdiaryapp.domain.repository.MongoDB
 import com.manriquetavi.jetdiaryapp.presentation.components.CommonAlertDialog
 import com.manriquetavi.jetdiaryapp.presentation.screens.authentication.AuthScreen
@@ -66,6 +69,12 @@ fun SetupNavGraph(
             navigateToNewDiaryStepTwoScreen = {
                 navController.navigate(Screen.NewDiaryStepTwo.passMoodId(it))
                 Log.d("NAVIGATE", "SetupNavGraph: $it")
+            },
+            navigateToHomeScreen = {
+                navController.navigate(Screen.Home.route) {
+                    popUpTo(navController.graph.findStartDestination().id)
+                    launchSingleTop = true
+                }
             }
         )
     }
@@ -188,7 +197,8 @@ fun NavGraphBuilder.writeRoute() {
 
 fun NavGraphBuilder.newDiaryRoute(
     onBackPressed: () -> Unit,
-    navigateToNewDiaryStepTwoScreen: (Int) -> Unit
+    navigateToNewDiaryStepTwoScreen: (Int) -> Unit,
+    navigateToHomeScreen: () -> Unit
 ) {
     composable(route = Screen.NewDiary.route) {
         NewDiaryStepOneScreen(
@@ -207,13 +217,27 @@ fun NavGraphBuilder.newDiaryRoute(
         )
     ) {
         val newDiaryStepTwoViewModel: NewDiaryStepTwoViewModel = viewModel()
-        val moodId = newDiaryStepTwoViewModel.moodId
+        val moodId = newDiaryStepTwoViewModel.moodId.value
+        val title = newDiaryStepTwoViewModel.title.value
+        val description = newDiaryStepTwoViewModel.description.value
+        val resultAddDiary = newDiaryStepTwoViewModel.resultAddDiary.value
         NewDiaryStepTwoScreen(
-            title = newDiaryStepTwoViewModel.title.value,
+            resultAddDiary = resultAddDiary,
+            title = title,
             onTitleChanged = { newDiaryStepTwoViewModel.setTitle(it) },
-            description = newDiaryStepTwoViewModel.description.value,
+            description = description,
             onDescriptionChanged = { newDiaryStepTwoViewModel.setDescription(it) },
-            onBackPressed = onBackPressed
+            onBackPressed = onBackPressed,
+            navigateToHomeScreen = navigateToHomeScreen,
+            onSavedClicked = {
+                newDiaryStepTwoViewModel.addNewDiary(
+                    Diary().apply {
+                        this.title = title
+                        this.description = description
+                        this.mood = moods[moodId].name
+                    }
+                )
+            }
         )
     }
 }

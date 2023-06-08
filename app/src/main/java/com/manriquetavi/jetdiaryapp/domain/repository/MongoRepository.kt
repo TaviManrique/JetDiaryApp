@@ -12,4 +12,5 @@ interface MongoRepository {
     fun configureTheRealm()
     fun getAllDiaries(): Flow<RequestState<Diaries>>
     fun getDiary(diaryId: ObjectId): RequestState<Diary>
+    suspend fun addDiary(diary: Diary): RequestState<Diary>
 }

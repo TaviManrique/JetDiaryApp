@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.manriquetavi.jetdiaryapp.domain.repository.Diaries
 import com.manriquetavi.jetdiaryapp.domain.repository.MongoDB
 import com.manriquetavi.jetdiaryapp.util.RequestState
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class HomeViewModel: ViewModel() {
@@ -16,11 +18,13 @@ class HomeViewModel: ViewModel() {
     val diaries: State<RequestState<Diaries>> = _diaries
 
     init {
-        observeAllDiaries()
+        getAllDiaries()
     }
 
-    private fun observeAllDiaries() {
-        viewModelScope.launch {
+    private fun getAllDiaries() {
+        _diaries.value = RequestState.Loading
+        viewModelScope.launch(Dispatchers.IO) {
+            delay(1000)
             MongoDB.getAllDiaries().collect { result ->
                 _diaries.value = result
             }
