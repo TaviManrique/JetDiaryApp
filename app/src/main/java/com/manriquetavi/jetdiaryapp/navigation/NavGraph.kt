@@ -20,6 +20,7 @@ import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.stepone.NewDia
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeViewModel
 import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo.NewDiaryStepTwoScreen
+import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo.NewDiaryStepTwoViewModel
 import com.manriquetavi.jetdiaryapp.util.Constants.APP_ID
 import com.manriquetavi.jetdiaryapp.util.RequestState
 import com.stevdzasan.messagebar.rememberMessageBarState
@@ -177,8 +178,7 @@ fun NavGraphBuilder.writeRoute() {
         arguments = listOf(
             navArgument(name = "diaryId") {
                 type = NavType.StringType
-                nullable = true
-                defaultValue = null
+                nullable = false
             }
         )
     ) {
@@ -196,8 +196,23 @@ fun NavGraphBuilder.newDiaryRoute(
             navigateToNewDiaryStepTwoScreen = navigateToNewDiaryStepTwoScreen
         )
     }
-    composable(route = Screen.NewDiaryStepTwo.route) {
+    composable(
+        route = Screen.NewDiaryStepTwo.route,
+        arguments = listOf(
+            navArgument(name = "moodId") {
+                type = NavType.IntType
+                nullable = false
+                defaultValue = 15
+            }
+        )
+    ) {
+        val newDiaryStepTwoViewModel: NewDiaryStepTwoViewModel = viewModel()
+        val moodId = newDiaryStepTwoViewModel.moodId
         NewDiaryStepTwoScreen(
+            title = newDiaryStepTwoViewModel.title.value,
+            onTitleChanged = { newDiaryStepTwoViewModel.setTitle(it) },
+            description = newDiaryStepTwoViewModel.description.value,
+            onDescriptionChanged = { newDiaryStepTwoViewModel.setDescription(it) },
             onBackPressed = onBackPressed
         )
     }

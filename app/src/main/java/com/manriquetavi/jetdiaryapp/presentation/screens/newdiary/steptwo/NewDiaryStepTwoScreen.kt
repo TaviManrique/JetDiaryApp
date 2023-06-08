@@ -6,13 +6,21 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun NewDiaryStepTwoScreen(
+    title: String,
+    onTitleChanged: (String) -> Unit,
+    description: String,
+    onDescriptionChanged: (String) -> Unit,
     onBackPressed: () -> Unit
 ) {
     Scaffold(
         topBar = { NewDiaryStepTwoTopBar(onBackPressed = onBackPressed) },
     ) { paddingValues ->
         NewDiaryStepTwoContent(
-            paddingValues
+            title = title,
+            onTitleChanged = onTitleChanged,
+            description = description,
+            onDescriptionChanged = onDescriptionChanged,
+            paddingValues = paddingValues
         )
     }
 }
@@ -21,6 +29,10 @@ fun NewDiaryStepTwoScreen(
 @Composable
 fun NewDiaryStepTwoScreenPreview() {
     NewDiaryStepTwoScreen(
+        title = "",
+        onTitleChanged = {},
+        description = "",
+        onDescriptionChanged = {},
         onBackPressed = {}
     )
 }

@@ -58,7 +58,7 @@ fun HomeScreen(
             when(diaries) {
                 is RequestState.Success -> {
                     HomeContent(
-                        diariesWithDates = diaries.date,
+                        diariesWithDates = diaries.data,
                         onClickDiary = {},
                         paddingValues = paddingValues
                     )

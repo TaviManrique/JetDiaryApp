@@ -101,7 +101,8 @@ fun NewDiaryStepOneContent(
             ButtonAnimation(
                 modifier = Modifier
                     .wrapContentHeight()
-                    .width(320.dp),
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp),
                 onClick = {
                     navigateToNewDiaryStepTwoScreen(moodIndexSelected)
                 }
