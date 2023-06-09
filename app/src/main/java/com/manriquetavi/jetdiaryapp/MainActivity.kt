@@ -3,6 +3,7 @@ package com.manriquetavi.jetdiaryapp
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,7 +27,8 @@ class MainActivity : ComponentActivity() {
         }
         WindowCompat.setDecorFitsSystemWindows(window , false)
         setContent {
-            var darkTheme by remember { mutableStateOf(false) }
+            val isDarkTheme =  isSystemInDarkTheme()
+            var darkTheme by remember { mutableStateOf(isDarkTheme) }
             JetDiaryAppTheme(darkTheme = darkTheme) {
                 val navController = rememberNavController()
                 SetupNavGraph(
