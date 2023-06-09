@@ -123,6 +123,9 @@ dependencies {
     // Icons
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
 
+    // Lottie
+    implementation "com.airbnb.android:lottie-compose:6.0.0"
+
     debugImplementation "androidx.customview:customview:1.2.0-alpha01"
     debugImplementation "androidx.customview:customview-poolingcontainer:1.0.0-alpha01"
 

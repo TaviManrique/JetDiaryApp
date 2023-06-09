@@ -135,7 +135,7 @@ fun NewDiaryStepTwoContent(
             LaunchedEffect(true) {
                 Toast.makeText(
                     context,
-                    "Saved Successfully",
+                    "Successfully saved",
                     Toast.LENGTH_SHORT
                 ).show()
                 navigateToHomeScreen()
@@ -144,7 +144,7 @@ fun NewDiaryStepTwoContent(
         is RequestState.Error -> {
             Toast.makeText(
                 context,
-                "Saved Successfully",
+                "Failed to save",
                 Toast.LENGTH_SHORT
             ).show()
         }

@@ -2,7 +2,7 @@
 <resources>
     <style name="Theme.JetDiaryApp.CustomSplash" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">#191C1B</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/logo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/new_logo</item>
         <item name="postSplashScreenTheme">@style/Theme.JetDiaryApp</item>
     </style>
 </resources>

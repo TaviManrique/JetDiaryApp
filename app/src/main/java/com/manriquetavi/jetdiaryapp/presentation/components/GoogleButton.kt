@@ -4,7 +4,6 @@ import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -15,8 +14,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.manriquetavi.jetdiaryapp.R
 import com.manriquetavi.jetdiaryapp.ui.theme.JetDiaryAppTheme
@@ -28,11 +27,9 @@ fun GoogleButton(
     primaryText: String = "Sign in with Google",
     secondaryText: String = "Please wait...",
     icon: Int = R.drawable.google_logo,
-    shape: Shape = Shapes().extraSmall,
-    borderColor: Color = MaterialTheme.colorScheme.surfaceVariant,
-    backgroundColor: Color = MaterialTheme.colorScheme.surface,
-    borderStrokeWidth: Dp = 1.dp,
-    progressIndicatorColor: Color = MaterialTheme.colorScheme.primary,
+    shape: Shape = Shapes().small,
+    backgroundColor: Color = MaterialTheme.colorScheme.primary,
+    progressIndicatorColor: Color = MaterialTheme.colorScheme.onPrimary,
     onClick: () -> Unit
 ) {
     var buttonText by remember { mutableStateOf(primaryText) }
@@ -44,7 +41,6 @@ fun GoogleButton(
     Surface(
         modifier = modifier.clickable(enabled = !loadingState) { onClick() },
         shape = shape,
-        border = BorderStroke(width = borderStrokeWidth, color = borderColor),
         color = backgroundColor
     ) {
         Row(
@@ -67,8 +63,12 @@ fun GoogleButton(
             )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
+                modifier = Modifier.padding(vertical = 4.dp),
                 text = buttonText,
-                style = TextStyle(fontSize = MaterialTheme.typography.bodyMedium.fontSize)
+                style = TextStyle(
+                    fontSize = MaterialTheme.typography.bodyLarge.fontSize,
+                    fontWeight = FontWeight.Bold
+                )
             )
             if(loadingState) {
                 Spacer(modifier = Modifier.width(16.dp))
@@ -98,9 +98,5 @@ fun GoogleButtonPreviewLoadingTrue() {
 @Preview
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 fun GoogleButtonPreviewLoadingFalse() {
-    JetDiaryAppTheme {
-        Surface {
-            GoogleButton(loadingState = false) {}
-        }
-    }
+    GoogleButton(loadingState = false) {}
 }

@@ -20,12 +20,14 @@ import com.manriquetavi.jetdiaryapp.util.RequestState
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    darkTheme: Boolean,
     diaries: RequestState<Diaries>,
     drawerState: DrawerState,
     signOutClicked: () -> Unit,
     onProfileClicked: () -> Unit,
     onCalendarClicked: () -> Unit,
-    navigateToNewDiary: () -> Unit
+    navigateToNewDiary: () -> Unit,
+    onThemeUpdate: () -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
@@ -37,9 +39,11 @@ fun HomeScreen(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             topBar = {
                 HomeTopBar(
+                    darkTheme = darkTheme,
                     scrollBehavior = scrollBehavior,
                     onMenuClicked = onProfileClicked,
-                    onCalendarClicked = onCalendarClicked
+                    onCalendarClicked = onCalendarClicked,
+                    onThemeUpdate = onThemeUpdate
                 )
             },
             floatingActionButton = {
@@ -102,7 +106,7 @@ fun NavigationDrawer(
                 ) {
                     Image(
                         modifier = Modifier.size(250.dp),
-                        painter = painterResource(id = R.drawable.logo),
+                        painter = painterResource(id = R.drawable.new_logo),
                         contentDescription = "Logo Item"
                     )
                 }
@@ -136,11 +140,13 @@ fun NavigationDrawer(
 @Preview
 fun HomeScreenPreview() {
     HomeScreen(
+        darkTheme = false,
         diaries = RequestState.Idle,
         drawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
         onProfileClicked = { },
         signOutClicked = { },
         onCalendarClicked = { },
-        navigateToNewDiary = { }
+        navigateToNewDiary = { },
+        onThemeUpdate = { }
     )
 }

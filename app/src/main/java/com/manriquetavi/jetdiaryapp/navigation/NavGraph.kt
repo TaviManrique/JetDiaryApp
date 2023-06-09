@@ -6,7 +6,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -36,9 +35,11 @@ import java.lang.Exception
 
 @Composable
 fun SetupNavGraph(
+    darkTheme: Boolean,
     startDestination: String,
     navController: NavHostController,
-    onDataLoaded: () -> Unit
+    onDataLoaded: () -> Unit,
+    onThemeUpDate: () -> Unit,
 ) {
     NavHost(
         startDestination = startDestination,
@@ -52,6 +53,7 @@ fun SetupNavGraph(
             onDataLoaded = onDataLoaded
         )
         homeRoute(
+            darkTheme = darkTheme,
             navigateToNewDiary = {
                 navController.navigate(Screen.NewDiary.route)
             },
@@ -59,7 +61,8 @@ fun SetupNavGraph(
                 navController.popBackStack()
                 navController.navigate(Screen.Authentication.route)
             },
-            onDataLoaded = onDataLoaded
+            onDataLoaded = onDataLoaded,
+            onThemeUpDate = onThemeUpDate
         )
         writeRoute()
         newDiaryRoute(
@@ -72,7 +75,7 @@ fun SetupNavGraph(
             },
             navigateToHomeScreen = {
                 navController.navigate(Screen.Home.route) {
-                    popUpTo(navController.graph.findStartDestination().id)
+                    popUpTo(Screen.Home.route)
                     launchSingleTop = true
                 }
             }
@@ -128,9 +131,11 @@ fun NavGraphBuilder.authenticationRoute(
 }
 
 fun NavGraphBuilder.homeRoute(
+    darkTheme: Boolean,
     navigateToNewDiary: () -> Unit,
     navigateToAuth: () -> Unit,
-    onDataLoaded: () -> Unit
+    onDataLoaded: () -> Unit,
+    onThemeUpDate: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
         val homeViewModel: HomeViewModel = viewModel()
@@ -146,6 +151,7 @@ fun NavGraphBuilder.homeRoute(
         }
 
         HomeScreen(
+            darkTheme = darkTheme,
             diaries = diaries,
             drawerState = drawerState,
             signOutClicked = {
@@ -155,7 +161,8 @@ fun NavGraphBuilder.homeRoute(
                 scope.launch { drawerState.open() }
             },
             onCalendarClicked = {},
-            navigateToNewDiary = navigateToNewDiary
+            navigateToNewDiary = navigateToNewDiary,
+            onThemeUpdate = onThemeUpDate
         )
 
         LaunchedEffect(key1 = Unit) {

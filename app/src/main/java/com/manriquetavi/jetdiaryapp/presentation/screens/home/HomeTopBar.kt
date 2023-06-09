@@ -1,22 +1,27 @@
 package com.manriquetavi.jetdiaryapp.presentation.screens.home
 
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import com.manriquetavi.jetdiaryapp.presentation.components.ThemeSwitcher
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeTopBar(
+    darkTheme: Boolean,
     scrollBehavior: TopAppBarScrollBehavior,
     onMenuClicked:() -> Unit,
-    onCalendarClicked:() -> Unit
+    onCalendarClicked:() -> Unit,
+    onThemeUpdate: () -> Unit
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
         navigationIcon = {
             IconButton(onClick =  onMenuClicked) {
@@ -34,12 +39,18 @@ fun HomeTopBar(
             )
         },
         actions = {
+            ThemeSwitcher(
+                darkTheme = darkTheme,
+                onClick = onThemeUpdate
+            )
+            Spacer(modifier = Modifier.width(12.dp))
+            /*
             IconButton(onClick = onCalendarClicked) {
                 Icon(
                     imageVector = Icons.Default.DateRange,
                     contentDescription = "Calendar Icon"
                 )
-            }
+            }*/
         }
     )
 }
