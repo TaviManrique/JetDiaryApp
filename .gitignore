@@ -1,11 +1,29 @@
-*.iml
+#IntelliJ
 .idea/
+*.iml
+/.idea/workspace.xml
+/.idea/misc.xml
 misc.xml
-.gradle
-/local.properties
+
+# Version control
+vsc.xml
+
+# lint/reports/
 .DS_Store
+
+# Gradle files
+.gradle
 /build
+
+# Local confiuration file (sdk, path, etc)
+local.properties
+
+# Android Studio captures folder
 /captures
+
+# Log Files
+*.log
+
+# External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx
-local.properties
