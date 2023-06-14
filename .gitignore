@@ -27,3 +27,8 @@ local.properties
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx
+
+gradlew
+gradlew.bat
+gradle/wrapper/gradle-wrapper.jar
+gradle/wrapper/gradle-wrapper.properties
