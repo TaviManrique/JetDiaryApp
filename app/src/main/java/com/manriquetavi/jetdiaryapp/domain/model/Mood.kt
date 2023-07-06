@@ -74,15 +74,12 @@ enum class Mood(
 
 val moods: List<Mood> = listOf(
     Mood.Angry,
-    Mood.Crying,
     Mood.Embarrassed,
-    Mood.Happy,
     Mood.Hungry,
     Mood.Laughing,
     Mood.Love,
     Mood.Neutral,
     Mood.Sad,
-    Mood.Sarcastic,
     Mood.Sick,
     Mood.Sleep,
     Mood.Smile,

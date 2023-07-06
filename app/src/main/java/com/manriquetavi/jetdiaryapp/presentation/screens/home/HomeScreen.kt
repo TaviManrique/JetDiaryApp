@@ -27,6 +27,7 @@ fun HomeScreen(
     onProfileClicked: () -> Unit,
     onCalendarClicked: () -> Unit,
     navigateToNewDiary: () -> Unit,
+    navigateToUpdateDiary: (String) -> Unit,
     onThemeUpdate: () -> Unit
 ) {
     var padding by remember { mutableStateOf(PaddingValues()) }
@@ -63,7 +64,7 @@ fun HomeScreen(
                 is RequestState.Success -> {
                     HomeContent(
                         diariesWithDates = diaries.data,
-                        onClickDiary = {},
+                        onClickDiary = navigateToUpdateDiary,
                         paddingValues = paddingValues
                     )
                 }
@@ -147,6 +148,7 @@ fun HomeScreenPreview() {
         signOutClicked = { },
         onCalendarClicked = { },
         navigateToNewDiary = { },
+        navigateToUpdateDiary = { },
         onThemeUpdate = { }
     )
 }

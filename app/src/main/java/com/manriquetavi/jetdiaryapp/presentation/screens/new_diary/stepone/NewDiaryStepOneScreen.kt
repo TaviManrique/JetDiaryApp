@@ -1,4 +1,4 @@
-package com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.stepone
+package com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.stepone
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable

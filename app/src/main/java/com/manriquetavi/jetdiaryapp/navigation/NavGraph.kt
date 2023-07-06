@@ -18,13 +18,14 @@ import com.manriquetavi.jetdiaryapp.domain.repository.MongoDB
 import com.manriquetavi.jetdiaryapp.presentation.components.CommonAlertDialog
 import com.manriquetavi.jetdiaryapp.presentation.screens.authentication.AuthScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.authentication.AuthViewModel
-import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.stepone.NewDiaryStepOneScreen
+import com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.stepone.NewDiaryStepOneScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeScreen
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.HomeViewModel
-import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo.NewDiaryStepTwoScreen
-import com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo.NewDiaryStepTwoViewModel
+import com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo.NewDiaryStepTwoScreen
+import com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo.NewDiaryStepTwoViewModel
+import com.manriquetavi.jetdiaryapp.presentation.screens.update_diary.UpdateDiaryScreen
+import com.manriquetavi.jetdiaryapp.presentation.screens.update_diary.UpdateDiaryViewModel
 import com.manriquetavi.jetdiaryapp.util.Constants.APP_ID
-import com.manriquetavi.jetdiaryapp.util.RequestState
 import com.stevdzasan.messagebar.rememberMessageBarState
 import com.stevdzasan.onetap.rememberOneTapSignInState
 import io.realm.kotlin.mongodb.App
@@ -62,9 +63,16 @@ fun SetupNavGraph(
                 navController.navigate(Screen.Authentication.route)
             },
             onDataLoaded = onDataLoaded,
+            navigateToUpdateDiary = {
+                navController.navigate(Screen.Update.passDiaryId(diaryId = it))
+            },
             onThemeUpDate = onThemeUpDate
         )
-        writeRoute()
+        updateRoute(
+            onBackPressed = {
+                navController.popBackStack()
+            }
+        )
         newDiaryRoute(
             onBackPressed = {
                 navController.popBackStack()
@@ -134,20 +142,23 @@ fun NavGraphBuilder.homeRoute(
     darkTheme: Boolean,
     navigateToNewDiary: () -> Unit,
     navigateToAuth: () -> Unit,
+    navigateToUpdateDiary: (String) -> Unit,
     onDataLoaded: () -> Unit,
     onThemeUpDate: () -> Unit
 ) {
     composable(route = Screen.Home.route) {
         val homeViewModel: HomeViewModel = viewModel()
-        val diaries by homeViewModel.diaries
+        val diaries by homeViewModel.diaries.collectAsState()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
 
         LaunchedEffect(key1 = diaries) {
+            onDataLoaded()
+            /* Esperar a que cargue los diarios
             if (diaries !is RequestState.Loading && diaries !is RequestState.Idle) {
                 onDataLoaded()
-            }
+            }*/
         }
 
         HomeScreen(
@@ -162,6 +173,7 @@ fun NavGraphBuilder.homeRoute(
             },
             onCalendarClicked = {},
             navigateToNewDiary = navigateToNewDiary,
+            navigateToUpdateDiary = navigateToUpdateDiary,
             onThemeUpdate = onThemeUpDate
         )
 
@@ -188,9 +200,11 @@ fun NavGraphBuilder.homeRoute(
     }
 }
 
-fun NavGraphBuilder.writeRoute() {
+fun NavGraphBuilder.updateRoute(
+    onBackPressed: () -> Unit
+) {
     composable(
-        route = Screen.Write.route,
+        route = Screen.Update.route,
         arguments = listOf(
             navArgument(name = "diaryId") {
                 type = NavType.StringType
@@ -198,7 +212,12 @@ fun NavGraphBuilder.writeRoute() {
             }
         )
     ) {
-
+        val updateDiaryViewModel: UpdateDiaryViewModel = viewModel()
+        val diary = updateDiaryViewModel.diary.collectAsState().value
+        UpdateDiaryScreen(
+            onBackPressed = onBackPressed,
+            diaryState = diary
+        )
     }
 }
 
@@ -219,19 +238,15 @@ fun NavGraphBuilder.newDiaryRoute(
             navArgument(name = "moodId") {
                 type = NavType.IntType
                 nullable = false
-                defaultValue = 15
             }
         )
     ) {
         val newDiaryStepTwoViewModel: NewDiaryStepTwoViewModel = viewModel()
         val moodId = newDiaryStepTwoViewModel.moodId.value
-        val title = newDiaryStepTwoViewModel.title.value
         val description = newDiaryStepTwoViewModel.description.value
         val resultAddDiary = newDiaryStepTwoViewModel.resultAddDiary.value
         NewDiaryStepTwoScreen(
             resultAddDiary = resultAddDiary,
-            title = title,
-            onTitleChanged = { newDiaryStepTwoViewModel.setTitle(it) },
             description = description,
             onDescriptionChanged = { newDiaryStepTwoViewModel.setDescription(it) },
             onBackPressed = onBackPressed,
@@ -239,7 +254,6 @@ fun NavGraphBuilder.newDiaryRoute(
             onSavedClicked = {
                 newDiaryStepTwoViewModel.addNewDiary(
                     Diary().apply {
-                        this.title = title
                         this.description = description
                         this.mood = moods[moodId].name
                     }

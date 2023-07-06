@@ -1,4 +1,4 @@
-package com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo
+package com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
@@ -8,7 +8,6 @@ import com.manriquetavi.jetdiaryapp.domain.model.Diary
 import com.manriquetavi.jetdiaryapp.domain.repository.MongoDB
 import com.manriquetavi.jetdiaryapp.util.RequestState
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -17,8 +16,6 @@ class NewDiaryStepTwoViewModel(
 ): ViewModel() {
 
     var moodId = mutableStateOf(0)
-        private set
-    var title = mutableStateOf("")
         private set
     var description = mutableStateOf("")
         private set
@@ -29,10 +26,6 @@ class NewDiaryStepTwoViewModel(
         getMoodIdArgument()
     }
 
-    fun setTitle(title: String) {
-        this.title.value = title
-    }
-
     fun setDescription(description: String) {
         this.description.value = description
     }
@@ -41,14 +34,10 @@ class NewDiaryStepTwoViewModel(
         moodId.value = savedStateHandle.get<Int>(key = "moodId")!!
     }
 
-    fun addNewDiary(
-        diary: Diary
-    ) {
+    fun addNewDiary(diary: Diary) {
         resultAddDiary.value = RequestState.Loading
         viewModelScope.launch(Dispatchers.IO) {
-            delay(1000)
             resultAddDiary.value = MongoDB.addDiary(diary)
         }
-
     }
 }

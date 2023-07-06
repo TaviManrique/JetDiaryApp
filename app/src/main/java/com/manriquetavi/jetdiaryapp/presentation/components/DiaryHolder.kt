@@ -100,7 +100,7 @@ fun DiaryHolder(
         modifier = Modifier.clickable(
             indication = null,
             interactionSource = remember { MutableInteractionSource() }
-        ) { onClickDiary(diary._id.toString()) }
+        ) { onClickDiary(diary._id.toHexString()) }
     ) {
         Spacer(modifier = Modifier.width(14.dp))
         Surface(

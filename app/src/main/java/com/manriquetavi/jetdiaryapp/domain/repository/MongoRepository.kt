@@ -11,6 +11,6 @@ typealias Diaries = Map<LocalDate, List<Diary>>
 interface MongoRepository {
     fun configureTheRealm()
     fun getAllDiaries(): Flow<RequestState<Diaries>>
-    fun getDiary(diaryId: ObjectId): RequestState<Diary>
+    fun getDiary(diaryId: ObjectId): Flow<RequestState<Diary>>
     suspend fun addDiary(diary: Diary): RequestState<Diary>
 }

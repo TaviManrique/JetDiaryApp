@@ -10,9 +10,7 @@ import io.realm.kotlin.log.LogLevel
 import io.realm.kotlin.mongodb.App
 import io.realm.kotlin.mongodb.sync.SyncConfiguration
 import io.realm.kotlin.query.Sort
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import org.mongodb.kbson.ObjectId
 import java.time.ZoneId
 
@@ -42,38 +40,43 @@ object MongoDB: MongoRepository {
         }
     }
 
-    override fun getAllDiaries(): Flow<RequestState<Diaries>> = if (user != null) {
-        try {
-            realm.query<Diary>(query = "owner_id == $0", user.id)
-                .sort(property = "date", sortOrder = Sort.DESCENDING)
-                .asFlow()
-                .map { result ->
-                    RequestState.Success(
-                        data = result.list.groupBy { diary ->
-                            diary.date
-                                .toInstant()
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate()
-                        }
-                    )
-                }
-        } catch (e: Exception) {
-            flow { emit(RequestState.Error(e)) }
+    override fun getAllDiaries(): Flow<RequestState<Diaries>> = flow {
+        if (user != null) {
+            try {
+                realm.query<Diary>(query = "owner_id == $0", user.id)
+                    .sort(property = "date", sortOrder = Sort.DESCENDING).asFlow().collect {
+                        emit(
+                            RequestState.Success(
+                                data = it.list.groupBy { diary ->
+                                    diary.date
+                                        .toInstant()
+                                        .atZone(ZoneId.systemDefault())
+                                        .toLocalDate()
+                                }
+                            )
+                        )
+                    }
+            } catch (e: Exception) {
+                emit(RequestState.Error(e))
+            }
+        } else {
+            emit(RequestState.Error(UserNotAuthenticatedException()))
         }
-    } else {
-        flow { emit(RequestState.Error(UserNotAuthenticatedException())) }
     }
 
 
-    override fun getDiary(diaryId: ObjectId): RequestState<Diary> = if (user != null) {
-        try {
-            val diary = realm.query<Diary>(query = "owner_id == $0", diaryId).find().first()
-            RequestState.Success(data = diary)
-        } catch (e: Exception) {
-            RequestState.Error(e)
+
+    override fun getDiary(diaryId: ObjectId): Flow<RequestState<Diary>> = flow {
+        if (user != null) {
+            try {
+                val diary = realm.query<Diary>(query = "_id == $0", diaryId).find().first()
+                emit(RequestState.Success(data = diary))
+            } catch (e: Exception) {
+                emit(RequestState.Error(e))
+            }
+        } else {
+            emit(RequestState.Error(UserNotAuthenticatedException()))
         }
-    } else {
-        RequestState.Error(UserNotAuthenticatedException())
     }
 
     override suspend fun addDiary(diary: Diary): RequestState<Diary> =

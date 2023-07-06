@@ -1,4 +1,4 @@
-package com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.stepone
+package com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.icons.Icons
@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NewDiaryStepOneTopBar(
+fun NewDiaryStepTwoTopBar(
     onBackPressed: () -> Unit
 ) {
     CenterAlignedTopAppBar(
@@ -27,7 +27,7 @@ fun NewDiaryStepOneTopBar(
         title = {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "How do you feel?",
+                text = "What have you been up to?",
                 style = TextStyle(
                     fontSize = MaterialTheme.typography.titleLarge.fontSize,
                     fontWeight = FontWeight.Bold

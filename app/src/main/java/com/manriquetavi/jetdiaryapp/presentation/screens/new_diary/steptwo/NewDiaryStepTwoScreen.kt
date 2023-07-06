@@ -1,4 +1,4 @@
-package com.manriquetavi.jetdiaryapp.presentation.screens.newdiary.steptwo
+package com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -9,8 +9,6 @@ import com.manriquetavi.jetdiaryapp.util.RequestState
 @Composable
 fun NewDiaryStepTwoScreen(
     resultAddDiary: RequestState<Diary>,
-    title: String,
-    onTitleChanged: (String) -> Unit,
     description: String,
     onDescriptionChanged: (String) -> Unit,
     onBackPressed: () -> Unit,
@@ -22,8 +20,6 @@ fun NewDiaryStepTwoScreen(
     ) { paddingValues ->
         NewDiaryStepTwoContent(
             resultAddDiary = resultAddDiary,
-            title = title,
-            onTitleChanged = onTitleChanged,
             description = description,
             onDescriptionChanged = onDescriptionChanged,
             navigateToHomeScreen = navigateToHomeScreen,
@@ -37,8 +33,6 @@ fun NewDiaryStepTwoScreen(
 @Composable
 fun NewDiaryStepTwoScreenPreview() {
     NewDiaryStepTwoScreen(
-        title = "",
-        onTitleChanged = {},
         description = "",
         onDescriptionChanged = {},
         onBackPressed = {},

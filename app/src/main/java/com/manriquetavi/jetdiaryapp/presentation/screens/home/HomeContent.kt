@@ -36,7 +36,10 @@ fun HomeContent(
                         diary._id.toString()
                     }
                 ) {
-                    DiaryHolder(diary = it, onClickDiary = onClickDiary)
+                    DiaryHolder(
+                        diary = it,
+                        onClickDiary = onClickDiary
+                    )
                 }
             }
         }
