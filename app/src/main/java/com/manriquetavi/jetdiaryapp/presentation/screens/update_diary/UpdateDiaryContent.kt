@@ -13,19 +13,19 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.manriquetavi.jetdiaryapp.domain.model.Diary
 import com.manriquetavi.jetdiaryapp.domain.model.moods
 import com.manriquetavi.jetdiaryapp.presentation.components.SelectableMoodItem
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun UpdateDiaryContent(
     onDescriptionChanged: (String) -> Unit,
     diary: Diary,
     paddingValues: PaddingValues
 ) {
-    var moodIndexSelected by remember { mutableStateOf(moods.indexOfFirst { it.name == diary.mood }) }
+    var moodIndexSelected by remember { mutableIntStateOf(moods.indexOfFirst { it.name == diary.mood }) }
     val focusManager = LocalFocusManager.current
     Column(
         modifier = Modifier
@@ -61,11 +61,13 @@ fun UpdateDiaryContent(
                     text = "Start writing a note ..."
                 )
             },
-            colors = TextFieldDefaults.textFieldColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                unfocusedContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
                 focusedIndicatorColor = Color.Unspecified,
+                unfocusedIndicatorColor = Color.Unspecified,
                 disabledIndicatorColor = Color.Unspecified,
-                unfocusedIndicatorColor = Color.Unspecified
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
@@ -77,5 +79,14 @@ fun UpdateDiaryContent(
             )
         )
     }
+}
 
+@Preview
+@Composable
+fun UpdateDiaryContentPreview() {
+    UpdateDiaryContent(
+        onDescriptionChanged = {},
+        diary = Diary(),
+        paddingValues = PaddingValues()
+    )
 }

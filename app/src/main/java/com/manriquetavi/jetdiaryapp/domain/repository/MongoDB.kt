@@ -65,7 +65,7 @@ object MongoDB: MongoRepository {
     }
 
 
-
+/*
     override fun getDiary(diaryId: ObjectId): Flow<RequestState<Diary>> = flow {
         if (user != null) {
             try {
@@ -77,7 +77,23 @@ object MongoDB: MongoRepository {
         } else {
             emit(RequestState.Error(UserNotAuthenticatedException()))
         }
+    }*/
+
+    //Course
+    override fun getDiary(diaryId: ObjectId): Flow<RequestState<Diary>> {
+        return if (user != null) {
+            try {
+                realm.query<Diary>(query = "_id == $0", diaryId).asFlow().map {
+                    RequestState.Success(data = it.list.first())
+                }
+            } catch (e: Exception) {
+                flow { emit(RequestState.Error(e)) }
+            }
+        } else {
+            flow { emit(RequestState.Error(UserNotAuthenticatedException())) }
+        }
     }
+
 
     override suspend fun addDiary(diary: Diary): RequestState<Diary> =
         if (user != null) {

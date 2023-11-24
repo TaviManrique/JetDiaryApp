@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel: ViewModel() {
 
-    private val _diaries: MutableStateFlow<RequestState<Diaries>> = MutableStateFlow(RequestState.Idle)
+    private val _diaries: MutableStateFlow<RequestState<Diaries>> = MutableStateFlow(RequestState.Loading)
     val diaries: StateFlow<RequestState<Diaries>> = _diaries.asStateFlow()
 
     init {

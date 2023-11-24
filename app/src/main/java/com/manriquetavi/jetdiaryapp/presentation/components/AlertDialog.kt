@@ -3,6 +3,7 @@ package com.manriquetavi.jetdiaryapp.presentation.components
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
 fun CommonAlertDialog(
@@ -48,4 +49,16 @@ fun CommonAlertDialog(
             onDismissRequest = onCloseDialog
         )
     }
+}
+
+@Preview
+@Composable
+fun CommonAlertDialogPreview() {
+    CommonAlertDialog(
+        title = "Title",
+        message = "message",
+        dialogOpened = true,
+        onCloseDialog = {},
+        onYesClicked = {}
+    )
 }

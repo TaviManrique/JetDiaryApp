@@ -7,14 +7,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.manriquetavi.jetdiaryapp.domain.model.Diary
 import com.manriquetavi.jetdiaryapp.presentation.screens.home.EmptyContent
-import com.manriquetavi.jetdiaryapp.util.RequestState
 
 @Composable
-fun UpdateDiaryScreen(
+internal fun UpdateDiaryScreen(
+    uiState: UiState,
     onBackPressed: () -> Unit,
-    diaryState: RequestState<Diary>
 ) {
     Scaffold(
         topBar = {
@@ -23,22 +21,21 @@ fun UpdateDiaryScreen(
             )
         }
     ) { paddingValues ->
-        when (diaryState) {
-            is RequestState.Success -> {
+        when (uiState) {
+            is UiState.Success -> {
                 UpdateDiaryContent(
                     onDescriptionChanged = {},
-                    diary = diaryState.data,
+                    diary = uiState.diary,
                     paddingValues = paddingValues
                 )
             }
-            is RequestState.Error -> {
+            is UiState.Error -> {
                 EmptyContent(
                     title = "Error",
-                    subtitle = "${diaryState.error.message}"
+                    subtitle = uiState.message
                 )
             }
-            is RequestState.Idle -> { }
-            is RequestState.Loading -> {
+            is UiState.Loading -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize(),

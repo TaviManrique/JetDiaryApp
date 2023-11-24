@@ -1,10 +1,13 @@
 package com.manriquetavi.jetdiaryapp.navigation
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -56,7 +59,7 @@ fun SetupNavGraph(
         homeRoute(
             darkTheme = darkTheme,
             navigateToNewDiary = {
-                navController.navigate(Screen.NewDiary.route)
+                navController.navigate(Screen.NewDiaryStepOne.route)
             },
             navigateToAuth = {
                 navController.popBackStack()
@@ -148,7 +151,7 @@ fun NavGraphBuilder.homeRoute(
 ) {
     composable(route = Screen.Home.route) {
         val homeViewModel: HomeViewModel = viewModel()
-        val diaries by homeViewModel.diaries.collectAsState()
+        val diaries by homeViewModel.diaries.collectAsStateWithLifecycle()
         val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
         var signOutDialogOpened by remember { mutableStateOf(false) }
         val scope = rememberCoroutineScope()
@@ -212,11 +215,11 @@ fun NavGraphBuilder.updateRoute(
             }
         )
     ) {
-        val updateDiaryViewModel: UpdateDiaryViewModel = viewModel()
-        val diary = updateDiaryViewModel.diary.collectAsState().value
+        val viewModel: UpdateDiaryViewModel = viewModel()
+        val uiState by viewModel.uiState.collectAsStateWithLifecycle()
         UpdateDiaryScreen(
             onBackPressed = onBackPressed,
-            diaryState = diary
+            uiState = uiState
         )
     }
 }
@@ -226,7 +229,7 @@ fun NavGraphBuilder.newDiaryRoute(
     navigateToNewDiaryStepTwoScreen: (Int) -> Unit,
     navigateToHomeScreen: () -> Unit
 ) {
-    composable(route = Screen.NewDiary.route) {
+    composable(route = Screen.NewDiaryStepOne.route) {
         NewDiaryStepOneScreen(
             onBackPressed = onBackPressed,
             navigateToNewDiaryStepTwoScreen = navigateToNewDiaryStepTwoScreen
@@ -241,21 +244,29 @@ fun NavGraphBuilder.newDiaryRoute(
             }
         )
     ) {
+        val context = LocalContext.current
         val newDiaryStepTwoViewModel: NewDiaryStepTwoViewModel = viewModel()
-        val moodId = newDiaryStepTwoViewModel.moodId.value
+        val moodId = newDiaryStepTwoViewModel.moodId.intValue
         val description = newDiaryStepTwoViewModel.description.value
-        val resultAddDiary = newDiaryStepTwoViewModel.resultAddDiary.value
+        val uiEvent = newDiaryStepTwoViewModel.uiEvent
         NewDiaryStepTwoScreen(
-            resultAddDiary = resultAddDiary,
+            uiEvent = uiEvent.value,
             description = description,
             onDescriptionChanged = { newDiaryStepTwoViewModel.setDescription(it) },
             onBackPressed = onBackPressed,
-            navigateToHomeScreen = navigateToHomeScreen,
             onSavedClicked = {
                 newDiaryStepTwoViewModel.addNewDiary(
                     Diary().apply {
                         this.description = description
                         this.mood = moods[moodId].name
+                    },
+                    navigateBack = onBackPressed,
+                    onError = { message ->
+                        Toast.makeText(
+                            context,
+                            message,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                 )
             }

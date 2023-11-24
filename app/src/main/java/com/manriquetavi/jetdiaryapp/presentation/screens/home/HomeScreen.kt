@@ -60,7 +60,7 @@ fun HomeScreen(
             }
         ) { paddingValues ->
             padding = paddingValues
-            when(diaries) {
+            when (diaries) {
                 is RequestState.Success -> {
                     HomeContent(
                         diariesWithDates = diaries.data,
@@ -74,7 +74,7 @@ fun HomeScreen(
                         subtitle = "${diaries.error.message}"
                     )
                 }
-                is RequestState.Loading -> {
+                RequestState.Loading -> {
                     Box(
                         modifier = Modifier
                             .fillMaxSize(),
@@ -83,7 +83,6 @@ fun HomeScreen(
                         CircularProgressIndicator()
                     }
                 }
-                else -> {}
             }
         }
     }
@@ -142,7 +141,7 @@ fun NavigationDrawer(
 fun HomeScreenPreview() {
     HomeScreen(
         darkTheme = false,
-        diaries = RequestState.Idle,
+        diaries = RequestState.Loading,
         drawerState = rememberDrawerState(initialValue = DrawerValue.Closed),
         onProfileClicked = { },
         signOutClicked = { },

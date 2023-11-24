@@ -1,31 +1,40 @@
 package com.manriquetavi.jetdiaryapp.presentation.screens.new_diary.steptwo
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.manriquetavi.jetdiaryapp.domain.model.Diary
-import com.manriquetavi.jetdiaryapp.util.RequestState
 
 @Composable
 fun NewDiaryStepTwoScreen(
-    resultAddDiary: RequestState<Diary>,
+    uiEvent: NewDiaryStepTwoUiEvent,
     description: String,
     onDescriptionChanged: (String) -> Unit,
     onBackPressed: () -> Unit,
-    navigateToHomeScreen: () -> Unit,
     onSavedClicked: () -> Unit
 ) {
     Scaffold(
         topBar = { NewDiaryStepTwoTopBar(onBackPressed = onBackPressed) },
     ) { paddingValues ->
-        NewDiaryStepTwoContent(
-            resultAddDiary = resultAddDiary,
-            description = description,
-            onDescriptionChanged = onDescriptionChanged,
-            navigateToHomeScreen = navigateToHomeScreen,
-            onSavedClicked = onSavedClicked,
-            paddingValues = paddingValues
-        )
+        when (uiEvent) {
+            NewDiaryStepTwoUiEvent.CreateNewDiary -> NewDiaryStepTwoContent(
+                description = description,
+                onDescriptionChanged = onDescriptionChanged,
+                onSavedClicked = onSavedClicked,
+                paddingValues = paddingValues
+            )
+            NewDiaryStepTwoUiEvent.Loading -> Box(
+                modifier = Modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        }
     }
 }
 
@@ -33,11 +42,10 @@ fun NewDiaryStepTwoScreen(
 @Composable
 fun NewDiaryStepTwoScreenPreview() {
     NewDiaryStepTwoScreen(
+        uiEvent = NewDiaryStepTwoUiEvent.CreateNewDiary,
         description = "",
         onDescriptionChanged = {},
         onBackPressed = {},
-        resultAddDiary = RequestState.Idle,
-        navigateToHomeScreen = {},
         onSavedClicked = {}
     )
 }
